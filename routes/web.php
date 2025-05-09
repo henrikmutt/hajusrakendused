@@ -14,7 +14,7 @@ Route::get('/markers/{id}', [MarkerController::class, 'show']);
 Route::put('/markers/{id}', [MarkerController::class, 'update']);
 Route::delete('/markers/{id}', [MarkerController::class, 'destroy']);
 
-Route::resource('/posts', PostController::class);
+/* Route::resource('/posts', PostController::class); */
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -22,10 +22,10 @@ Route::get('/', function () {
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/posts', function () {
+/* Route::get('/posts', function () {
     return Inertia::render('PostsPage');
 
-});
+}); */
 
 Route::get('/products', [ProductController::class, 'index'])->middleware('auth')->name('products.index');
 
