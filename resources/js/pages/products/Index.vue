@@ -7,8 +7,8 @@ import CardFooter from '@/components/ui/card/CardFooter.vue';
 import CardHeader from '@/components/ui/card/CardHeader.vue';
 import CardTitle from '@/components/ui/card/CardTitle.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router } from '@inertiajs/vue3';
-import { ShoppingCart } from 'lucide-vue-next';
+import { Link, router } from '@inertiajs/vue3';
+import { ShoppingCart, Trash } from 'lucide-vue-next';
 
 defineProps<{
   products: {
@@ -25,15 +25,21 @@ const addToCart = (product: any) => {
     preserveScroll: true
   })
 };
+
+const clear = () => {
+  router.post(route('cart.clear'));
+};
 </script>
 
 <template>
     <AppLayout>
-      <div class="p-6 flex justify-end">
-        {{ $page.props.cart }}
-        <Button variant="outline">
+      <div class="p-6 flex justify-end gap-4">
+        <Button :as="Link" :href="route('cart.checkout')"  variant="outline">
           <ShoppingCart class="size-5" />
-          <div>{{ Object.entries($page.props.cart ?? {})?.length }}</div>
+          <div>{{ $page.props.cartCount }}</div>
+        </Button>
+        <Button @click="clear" size="icon" variant="destructive">
+          <Trash />
         </Button>
       </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
