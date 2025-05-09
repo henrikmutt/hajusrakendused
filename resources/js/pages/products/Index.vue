@@ -20,6 +20,10 @@ defineProps<{
   }[]
 }>();
 
+const formatCurrency =(amount: number) => {
+   return new Intl.NumberFormat("et", { style: "currency", currency: "EUR" }).format(amount);
+}
+
 const addToCart = (product: any) => {
   router.post(route('cart.add', product), undefined, {
     preserveScroll: true
@@ -50,7 +54,7 @@ const clear = () => {
               <CardDescription>{{ product.description }}</CardDescription>
             </CardHeader>
             <CardContent>
-              {{ product.price }} €
+              {{ formatCurrency(product.price) }}
             </CardContent>
             <CardFooter>
               
