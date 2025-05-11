@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class CartController extends Controller
 {
@@ -62,4 +64,49 @@ class CartController extends Controller
 
         return redirect()->back();
     }
+
+    public function createCheckoutSession(Request $request)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return response()->json(['error' => 'Cart is empty'], 400);
+        }
+
+        $lineItems = [];
+
+        foreach ($cart as $id => $item) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => $item['name'],
+                        'description' => $item['description'],
+                    ],
+                    'unit_amount' => $item['price'] * 100,
+                ],
+                'quantity' => $item['quantity'],
+            ];
+        }
+
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('checkout.success'),
+            'cancel_url' => route('cart.checkout'),
+        ]);
+
+        return response()->json(['url' => $session->url]);
+    }
+
+    public function success()
+    {
+        session()->forget('cart');
+
+        return redirect()->route('products.index')->with('success', 'Payment successful.');
+    }
+
+
 }

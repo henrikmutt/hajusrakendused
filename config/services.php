@@ -38,5 +38,8 @@ return [
     'open_weather_map' => [
         'key' => env('WEATHER_API_KEY'),
     ],
-
+    
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+    ],
 ];

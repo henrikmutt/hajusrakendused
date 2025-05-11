@@ -11,10 +11,29 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import Input from '@/components/ui/input/Input.vue';
 import { router } from '@inertiajs/vue3';
+import { loadStripe } from '@stripe/stripe-js';
 
 const props = defineProps({
   cart: Object
 });
+
+const proceedToCheckout = async () => {
+    const res = await fetch(route('checkout.session'), {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await res.json();
+    if (data.url) {
+        window.location.href = data.url;
+    } else {
+        alert('Something went wrong!');
+    }
+};
 
 
 const formatCurrency =(amount: number) => {
@@ -33,6 +52,9 @@ const updateCart = (id: number, quantity:number | string) => {
 <template>
     <AppLayout>
         <div class="w-full px-6 mx-auto mt-10 space-y-4">
+          <div v-if="$page.props.flash.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
+            {{ $page.props.flash.success }}
+          </div>
           <Card v-for="(item, id) in $page.props.cart" :key="id" class="px-6 py-2 gap-4 flex flex-col md:flex-row md:justify-between">
             <div class="flex">
                 <img :src="item.image" class="md:w-16 md:h-16">
@@ -60,7 +82,7 @@ const updateCart = (id: number, quantity:number | string) => {
 
           </div>
           
-          <Button class="w-full md:w-auto">Proceed to Checkout</Button>
+          <Button class="w-full md:w-auto" @click="proceedToCheckout">Proceed to Checkout</Button>
         
         </div>
     </AppLayout>

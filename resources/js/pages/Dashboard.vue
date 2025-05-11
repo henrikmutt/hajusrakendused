@@ -182,11 +182,15 @@ onMounted(async () => {
                 <div
                     class="relative flex aspect-video justify-center overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
                 >
-                    <!-- <a href="/posts" class="flex items-center justify-center text-white bg-black w-full h-full text-4xl">Posts</a> -->
+                     <a href="/posts" class="flex items-center justify-center text-white bg-black w-full h-full text-4xl">Posts</a>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <a href="/products" class="flex h-full w-full items-center justify-center bg-black text-4xl text-white">Epood</a>
+                    <a href="/products" class="flex h-full w-full items-center justify-center bg-black text-4xl text-white">Shop</a>
                 </div>
+            </div>
+
+            <div>
+                <a href="/posts" class="flex items-center justify-center rounded-xl text-white bg-black w-full h-full text-4xl py-4">API</a>
             </div>
 
             <div

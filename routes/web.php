@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\MarkerController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 
@@ -14,7 +15,6 @@ Route::get('/markers/{id}', [MarkerController::class, 'show']);
 Route::put('/markers/{id}', [MarkerController::class, 'update']);
 Route::delete('/markers/{id}', [MarkerController::class, 'destroy']);
 
-/* Route::resource('/posts', PostController::class); */
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -22,10 +22,11 @@ Route::get('/', function () {
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
-/* Route::get('/posts', function () {
-    return Inertia::render('PostsPage');
-
-}); */
+Route::middleware(['auth'])->group(function () {
+    Route::resource('/posts', PostController::class);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+});
 
 Route::get('/products', [ProductController::class, 'index'])->middleware('auth')->name('products.index');
 
@@ -39,6 +40,10 @@ Route::controller(CartController::class)
     Route::post('/clear', 'clear')->name('clear');
     Route::post('/update', 'update')->name('update');
 });
+
+
+Route::post('/create-checkout-session', [CartController::class, 'createCheckoutSession'])->name('checkout.session');
+Route::get('/checkout/success', [CartController::class, 'success'])->name('checkout.success');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

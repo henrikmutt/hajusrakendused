@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -12,7 +13,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::all();
+        return Inertia::render('posts/Index', [
+            'posts' => Post::latest()->get()
+        ]);
     }
 
     /**
@@ -20,7 +23,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('posts/Create');
     }
 
     /**
@@ -28,38 +31,57 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        Post::create($request->only('title', 'description'));
+
+        return redirect()->route('posts.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        //
+        return Inertia::render('posts/Show', [
+            'post' => $post->load('comments.user')
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Post $post)
     {
-        //
+        return Inertia::render('posts/Edit', ['post' => $post]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        $post->update($request->only('title', 'description'));
+
+        return redirect()->route('posts.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('posts.index');
     }
+
+
 }
