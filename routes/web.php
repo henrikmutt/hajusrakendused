@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\MarkerController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ClassmateApiController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FightCardController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 
@@ -44,6 +46,19 @@ Route::controller(CartController::class)
 
 Route::post('/create-checkout-session', [CartController::class, 'createCheckoutSession'])->name('checkout.session');
 Route::get('/checkout/success', [CartController::class, 'success'])->name('checkout.success');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/fightCards/Create', [FightCardController::class, 'create'])->name('fight-cards.create');
+    Route::post('/fight-cards', [FightCardController::class, 'store'])->name('fight-cards.store');
+});
+
+Route::get('/fight-cards/classmate-data', [ClassmateApiController::class, 'fetch'])->name('classmate.fetch');
+Route::get('/fight-cards/{uuid}', [FightCardController::class, 'apiByUuid']);
+
+Route::get('/fightCards/classmate', function () {
+    return Inertia::render('fightCards/Classmate');
+})->name('fightCards.Classmate');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

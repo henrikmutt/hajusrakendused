@@ -190,7 +190,7 @@ onMounted(async () => {
             </div>
 
             <div>
-                <a href="/posts" class="flex items-center justify-center rounded-xl text-white bg-black w-full h-full text-4xl py-4">API</a>
+                <a href="/fightCards/Create" class="flex items-center justify-center rounded-xl text-white bg-black w-full h-full text-4xl py-4">API</a>
             </div>
 
             <div
